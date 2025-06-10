@@ -1,6 +1,7 @@
 html,
 body {
     height: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -8,8 +9,66 @@ body {
     margin: 0;
     background-color: #f8f9fa;
     color: #333;
-    display: flex;
-    flex-direction: column;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: #0d6efd;
+    padding-top: 1rem;
+    z-index: 1000;
+}
+
+.sidebar .navbar-brand {
+    color: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+    text-decoration: none;
+}
+
+.sidebar .nav-link {
+    color: white;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .toggle-sidebar {
+        display: block !important;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001;
+    }
 }
 
 header h1 {
