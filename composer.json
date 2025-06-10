@@ -1,0 +1,15 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "QuizProject\\": "api/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "QuizProject\\Tests\\": "tests/"
+        }
+    }
+}
