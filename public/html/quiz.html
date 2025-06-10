@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mes Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/quiz.css" />
+</head>
+
+<body>
+    <header class="bg-primary text-white py-4 position-relative">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Mes Quiz</h1>
+            <div>
+                <button onclick="window.location.href='home.html'" class="btn btn-light me-2">Accueil</button>
+                <button onclick="window.location.href='createQuiz.html'" class="btn btn-outline-light">+ Nouveau
+                    Quiz</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Titre</th>
+                        <th>Date de création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="quiz-table-body">
+                    <!-- Lignes dynamiques -->
+                </tbody>
+            </table>
+        </div>
+        <div id="success-message" class="success">Quiz ajouté avec succès !</div>
+        <div id="update-message" class="success">Quiz modifié avec succès !</div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 QuizPlatform. Tous droits réservés.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function loadUserQuizzes() {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/quizProject/api/route.php?route=my_quizzes&user_id=${encodeURIComponent(user.id)}`);
+                const userQuizzes = await response.json();
+
+                const tbody = document.getElementById("quiz-table-body");
+                tbody.innerHTML = "";
+
+                if (!Array.isArray(userQuizzes) || userQuizzes.length === 0) {
+                    tbody.innerHTML = "<tr><td colspan='3'>Aucun quiz trouvé</td></tr>";
+                    return;
+                }
+
+                userQuizzes.forEach((quiz) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+            <td>${quiz.title}</td>
+            <td>${quiz.created_at}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-2" onclick="editQuiz(${quiz.id})">Modifier</button>
+              <button class="btn btn-sm danger" onclick="deleteQuiz(${quiz.id})">Supprimer</button>
+            </td>
+          `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Erreur réseau:", error);
+            }
+        }
+
+        function editQuiz(id) {
+            window.location.href = `edit-quiz.html?id=${id}`;
+        }
+
+        async function deleteQuiz(id) {
+            if (!confirm("Êtes-vous sûr de vouloir supprimer ce quiz ?")) return;
+
+            try {
+                const response = await fetch("http://localhost/quizProject/api/route.php?route=delete_quiz", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `id=${id}`
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Quiz supprimé avec succès !");
+                    loadUserQuizzes();
+                } else {
+                    alert(result.error || "Erreur lors de la suppression du quiz.");
+                }
+            } catch (error) {
+                alert("Erreur réseau.");
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            loadUserQuizzes();
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("success") === "1") {
+                const msg = document.getElementById("success-message");
+                msg.classList.add("show");
+                setTimeout(() => msg.classList.remove("show"), 3000);
+            }
+            if (params.get("update") === "1") {
+                const msg = document.getElementById("update-message");
+                msg.classList.add("show");
+                setTimeout(() => msg.classList.remove("show"), 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>

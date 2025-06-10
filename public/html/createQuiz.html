@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/create-quiz.css" />
+</head>
+
+<body class="bg-light">
+    <header class="d-flex justify-content-between align-items-center px-4">
+        <h1 class="h4">Créer un nouveau Quiz</h1>
+        <nav>
+            <button onclick="window.location.href='home.html'" class="btn btn-light">Accueil</button>
+            <button onclick="window.location.href='my_quizzes.html'" class="btn btn-outline-light">Mes Quiz</button>
+        </nav>
+    </header>
+
+    <main class="container my-5">
+        <form id="quiz-form" class="mb-5">
+            <div class="mb-3">
+                <label for="title" class="form-label">Titre du Quiz :</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description :</label>
+                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Créer le Quiz</button>
+            <p id="message" class="mt-2 text-danger"></p>
+        </form>
+
+        <section>
+            <h2 class="mb-3">Ajouter des Questions</h2>
+            <input type="hidden" id="quiz-id" />
+            <form id="question-form">
+                <div id="questions-container"></div>
+                <div class="d-flex gap-2 mt-3">
+                    <button type="button" onclick="addQuestion()" class="btn btn-outline-primary">Ajouter une question</button>
+                    <button type="submit" class="btn btn-success">Enregistrer les questions</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 QuizPlatform. Tous droits réservés.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let questionCount = 0;
+
+        function addQuestion(initialText = "") {
+            if (questionCount >= 10) return alert("Maximum 10 questions");
+            questionCount++;
+
+            const container = document.getElementById("questions-container");
+
+            const questionDiv = document.createElement("div");
+            questionDiv.className = "question-item";
+            questionDiv.style.marginBottom = "20px";
+
+            // Question input
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = "question";
+            input.required = true;
+            input.placeholder = `Question ${questionCount}`;
+            input.value = initialText;
+            input.style.marginBottom = "10px";
+            questionDiv.appendChild(input);
+
+            // Answers container
+            const answersDiv = document.createElement("div");
+            answersDiv.className = "answers-container";
+            answersDiv.style.marginLeft = "20px";
+
+            // Add initial 2 answer fields
+            for (let i = 0; i < 2; i++) {
+                addAnswerField(answersDiv, questionCount, i);
+            }
+
+            // Add answer button
+            const addAnswerBtn = document.createElement("button");
+            addAnswerBtn.type = "button";
+            addAnswerBtn.textContent = "Ajouter une réponse";
+            addAnswerBtn.style.marginTop = "10px";
+            addAnswerBtn.onclick = () => {
+                const currentAnswers = answersDiv.querySelectorAll(".answer-field");
+                if (currentAnswers.length >= 4) {
+                    alert("Maximum 4 réponses par question");
+                    return;
+                }
+                addAnswerField(answersDiv, questionCount, currentAnswers.length);
+            };
+
+            questionDiv.appendChild(answersDiv);
+            questionDiv.appendChild(addAnswerBtn);
+            container.appendChild(questionDiv);
+            container.appendChild(document.createElement("br"));
+        }
+
+        function addAnswerField(container, questionCount, answerIndex) {
+            const answerDiv = document.createElement("div");
+            answerDiv.className = "answer-field";
+            answerDiv.style.marginBottom = "5px";
+
+            const answerInput = document.createElement("input");
+            answerInput.type = "text";
+            answerInput.name = `answer_${questionCount}_${answerIndex}`;
+            answerInput.required = true;
+            answerInput.placeholder = `Réponse ${answerIndex + 1}`;
+
+            const correctRadio = document.createElement("input");
+            correctRadio.type = "radio";
+            correctRadio.name = `correct_${questionCount}`;
+            correctRadio.value = answerIndex;
+            if (answerIndex === 0) correctRadio.checked = true;
+
+            const label = document.createElement("label");
+            label.textContent = "Correcte";
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.textContent = "×";
+            deleteBtn.style.marginLeft = "5px";
+            deleteBtn.onclick = () => {
+                const currentAnswers = container.querySelectorAll(".answer-field");
+                if (currentAnswers.length <= 2) {
+                    alert("Minimum 2 réponses par question");
+                    return;
+                }
+                container.removeChild(answerDiv);
+                // Réorganiser les indices des réponses restantes
+                const remainingAnswers = container.querySelectorAll(".answer-field");
+                remainingAnswers.forEach((ans, idx) => {
+                    const input = ans.querySelector("input[type='text']");
+                    const radio = ans.querySelector("input[type='radio']");
+                    input.name = `answer_${questionCount}_${idx}`;
+                    radio.value = idx;
+                    input.placeholder = `Réponse ${idx + 1}`;
+                });
+            };
+
+            answerDiv.appendChild(answerInput);
+            answerDiv.appendChild(correctRadio);
+            answerDiv.appendChild(label);
+            answerDiv.appendChild(deleteBtn);
+            container.appendChild(answerDiv);
+        }
+
+        // Modify the question form submission to include answers
+        document.getElementById("question-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const quizId = document.getElementById("quiz-id")?.value;
+            if (!quizId) return alert("Quiz non identifié");
+
+            const questionItems = document.querySelectorAll(".question-item");
+            const questions = [];
+
+            questionItems.forEach((item, questionIndex) => {
+                const questionInput = item.querySelector("input[name='question']");
+                const answerInputs = item.querySelectorAll("input[type='text'][name^='answer_']");
+                const correctRadio = item.querySelector("input[type='radio']:checked");
+
+                const answers = Array.from(answerInputs).map(input => input.value.trim());
+                const correctAnswerIndex = parseInt(correctRadio.value);
+
+                questions.push({
+                    text: questionInput.value.trim(),
+                    answers: answers,
+                    correctAnswerIndex: correctAnswerIndex
+                });
+            });
+
+            if (questions.length < 1 || questions.length > 10) {
+                return alert("Veuillez saisir entre 1 et 10 questions.");
+            }
+
+            try {
+                const response = await fetch("http://localhost/quizProject/api/route.php?route=add_questions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ quiz_id: quizId, questions })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Questions ajoutées !");
+                    window.location.href = "quiz.html";
+                } else {
+                    alert(result.error || "Erreur lors de l'enregistrement des questions.");
+                }
+            } catch (err) {
+                alert("Erreur réseau.");
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById("quiz-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            console.log("Données utilisateur:", user);
+
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+
+            const quizData = {
+                title,
+                description,
+                user_id: user.id
+            };
+            console.log("Données envoyées:", quizData);
+
+            try {
+                const response = await fetch('http://localhost/quizProject/api/route.php?route=create_quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(quizData)
+                });
+
+                const result = await response.json();
+                console.log("Réponse du serveur:", result);
+
+                if (response.ok) {
+                    const quizId = result.id;
+                    document.getElementById("quiz-id").value = quizId;
+                    alert("Quiz créé ! Ajoutez maintenant vos questions.");
+                } else {
+                    document.getElementById("message").textContent = result.error || "Erreur lors de la création du quiz";
+                }
+
+            } catch (error) {
+                console.error("Erreur complète:", error);
+                document.getElementById("message").textContent = "Erreur réseau.";
+            }
+        });
+    </script>
+</body>
+
+</html>
