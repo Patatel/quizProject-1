@@ -1,4 +1,9 @@
 <?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
 /**
  * API Router for QuizPlatform
  * 
@@ -8,6 +13,12 @@
 
 // Get the HTTP method and route from the request
 $method = $_SERVER['REQUEST_METHOD'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 $route = $_GET['route'] ?? '';
 
 /**

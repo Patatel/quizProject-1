@@ -1,0 +1,47 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: quizproject
+      DB_USER: user
+      DB_PASS: password
+    depends_on:
+      - db
+      - migrator
+    networks:
+      - app-network
+
+  migrator:
+    build: .
+    command: /usr/local/bin/wait-and-migrate.sh
+    environment:
+      DB_HOST: db
+      DB_NAME: quizproject
+      DB_USER: user
+      DB_PASS: password
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: quizproject
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -35,7 +35,7 @@ function submitAnswers($pdo, $data) {
 
         // Sauvegarder le résultat
         $stmt = $pdo->prepare("
-            INSERT INTO Results (user_id, quiz_id, score, total_questions, percentage, date_passed)
+            INSERT INTO results (user_id, quiz_id, score, total_questions, percentage, date_passed)
             VALUES (?, ?, ?, ?, ?, NOW())
         ");
         $stmt->execute([
@@ -48,7 +48,7 @@ function submitAnswers($pdo, $data) {
 
         // Sauvegarder les réponses individuelles
         $stmt = $pdo->prepare("
-            INSERT INTO UserAnswers (user_id, quiz_id, question_id, user_answer, is_correct)
+            INSERT INTO useranswers (user_id, quiz_id, question_id, user_answer, is_correct)
             VALUES (?, ?, ?, ?, ?)
         ");
 
@@ -93,8 +93,8 @@ function getAnswerDetails($pdo, $userId, $quizId) {
             qa.user_answer,
             qa.is_correct,
             q.correct_answer
-        FROM UserAnswers qa
-        JOIN Questions q ON qa.question_id = q.id
+        FROM useranswers qa
+        JOIN questions q ON qa.question_id = q.id
         WHERE qa.user_id = ? AND qa.quiz_id = ?
         ORDER BY q.id
     ");
@@ -108,11 +108,11 @@ function deleteQuestion($pdo, $questionId) {
         $pdo->beginTransaction();
 
         // Supprimer les réponses associées à la question
-        $stmt = $pdo->prepare("DELETE FROM UserAnswers WHERE question_id = ?");
+        $stmt = $pdo->prepare("DELETE FROM useranswers WHERE question_id = ?");
         $stmt->execute([$questionId]);
 
         // Supprimer la question
-        $stmt = $pdo->prepare("DELETE FROM Questions WHERE id = ?");
+        $stmt = $pdo->prepare("DELETE FROM questions WHERE id = ?");
         $stmt->execute([$questionId]);
 
         $pdo->commit();
@@ -129,14 +129,14 @@ function updateQuestion($pdo, $questionId, $questionText, $answers, $correctAnsw
         $pdo->beginTransaction();
 
         // Mettre à jour la question
-        $stmt = $pdo->prepare("UPDATE Questions SET question_text = ? WHERE id = ?");
+        $stmt = $pdo->prepare("UPDATE questions SET question_text = ? WHERE id = ?");
         $stmt->execute([$questionText, $questionId]);
 
         // Mettre à jour les réponses
         foreach ($answers as $index => $answer) {
             $isCorrect = ($index == $correctAnswerIndex) ? 1 : 0;
             $stmt = $pdo->prepare("
-                UPDATE Answers
+                UPDATE answers
                 SET answer_text = ?, is_correct = ?
                 WHERE question_id = ? AND id = ?
             ");

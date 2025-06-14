@@ -1,27 +1,17 @@
 <?php
-$host = 'localhost';
-$db = 'quizproject'; // Nom de ta base
-$user = 'root';
-$pass = ''; // selon ta config
+$host = getenv('DB_HOST') ?: 'localhost';
+$db = getenv('DB_NAME') ?: 'quizproject';
+$user = getenv('DB_USER') ?: 'user';
+$pass = getenv('DB_PASS') ?: 'password';
 
-// Allow overriding connection settings via environment variables for testing
-$dsn = getenv('DATABASE_DSN');
-$userEnv = getenv('DATABASE_USER');
-$passEnv = getenv('DATABASE_PASS');
-
-if ($dsn === false || $dsn === '') {
-    $dsn = "mysql:host=$host;dbname=$db";
-}
-if ($userEnv !== false) {
-    $user = $userEnv;
-}
-if ($passEnv !== false) {
-    $pass = $passEnv;
-}
+$dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
 try {
-    $pdo = new PDO($dsn, $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    ]);
 } catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["error" => "Erreur de connexion à la base de données : " . $e->getMessage()]);
+    exit;
 }

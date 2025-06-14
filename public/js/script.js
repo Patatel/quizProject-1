@@ -4,6 +4,8 @@ function showForm(type) {
   document.getElementById(type + '-form').classList.remove('hidden');
 }
 
+const API_BASE = window.location.origin + '/api/route.php';
+console.log(API_BASE);
 // Envoie la requête d'inscription
 function handleRegister(e) {
   e.preventDefault();
@@ -12,46 +14,53 @@ function handleRegister(e) {
   const email = document.getElementById('register-email').value;
   const password = document.getElementById('register-password').value;
 
-  fetch('/quizProject/api/route.php?route=register', {
+  fetch(`${API_BASE}?route=register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password })
   })
-  .then(res => res.json())
-  .then(data => {
-    const messageElement = document.getElementById('register-message');
-    if (data.message) {
-      messageElement.textContent = data.message;
-      messageElement.style.color = 'green';
-      showForm('login');
-    } else if (data.error) {
-      messageElement.textContent = data.error;
-      messageElement.style.color = 'red';
-    }
-  })
-  .catch(err => console.error(err));
+    .then(async res => {
+      const text = await res.text();
+      console.log("Raw response:", text);  // 🧪 Voir la vraie réponse (HTML ? JSON ?)
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error("Réponse invalide JSON");
+      }
+    })
+    .then(data => {
+      const messageElement = document.getElementById('register-message');
+      if (data.message) {
+        messageElement.textContent = data.message;
+        messageElement.style.color = 'green';
+        showForm('login');
+      } else if (data.error) {
+        messageElement.textContent = data.error;
+        messageElement.style.color = 'red';
+      }
+    })
+    .catch(err => console.error("Fetch failed:", err));
 }
 
-// Envoie la requête de connexion
-function handleLogin(event) {
-  event.preventDefault();
-
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-
-  fetch('/quizProject/api/route.php?route=login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
+fetch(`${API_BASE}?route=login`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ email, password })
+})
+  .then(async response => {
+    const text = await response.text();
+    console.log("Raw response login:", text);
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error("Réponse invalide JSON");
+    }
   })
-  .then(response => response.json())
   .then(data => {
     if (data.user) {
-      // Stocker les données de l'utilisateur dans le localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
-      // Rediriger vers la page home
       window.location.href = '/quizProject/public/html/home.html';
     } else {
       document.getElementById('login-message').textContent = data.error || "Erreur inconnue";
@@ -61,4 +70,3 @@ function handleLogin(event) {
     console.error("Erreur lors de la connexion :", error);
     document.getElementById('login-message').textContent = "Erreur réseau ou serveur.";
   });
-}

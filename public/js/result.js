@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const API_URL = window.location.origin + '/api/route.php';
+
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) return;
 
-  fetch(`http://localhost/quizProject/api/route.php?route=get-user-results&user_id=${user.id}`)
+  fetch(`${API_URL}?route=get-user-results&user_id=${user.id}`)
     .then(res => res.json())
     .then(results => {
       const tbody = document.getElementById("results-table-body");

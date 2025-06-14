@@ -2,8 +2,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 if (!user) {
     window.location.href = "index.html";
 }
-
-const API_URL = 'http://localhost/quizProject/api/route.php';
+const API_URL = window.location.origin + '/api/route.php';
 const urlParams = new URLSearchParams(window.location.search);
 const quizId = urlParams.get('quiz_id');
 

@@ -3,7 +3,7 @@ if (!user) {
   window.location.href = "index.html"; // redirection si non connecté
 }
 
-const API_URL = 'http://localhost/quizProject/api/route.php';
+const API_URL = window.location.origin + '/api/route.php';
 
 async function loadQuizzes() {
   const res = await fetch(`${API_URL}?route=my_quizzes&user_id=${user.id}`);
