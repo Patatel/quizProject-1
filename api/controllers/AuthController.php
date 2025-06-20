@@ -10,7 +10,6 @@ function register() {
     $password = $data['password'] ?? '';
 
     $userModel = new UserModel($pdo);
-    var_dump($userModel->findUserByEmail($email));
 
     if ($userModel->findUserByEmail($email)) {
         http_response_code(400);

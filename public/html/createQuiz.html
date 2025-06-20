@@ -184,7 +184,7 @@
             }
 
             try {
-                const response = await fetch("http://localhost/quizProject/api/route.php?route=add_questions", {
+                const response = await fetch("http://localhost:8080/api/route.php?route=add_questions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ quiz_id: quizId, questions })
@@ -227,7 +227,7 @@
             console.log("Données envoyées:", quizData);
 
             try {
-                const response = await fetch('http://localhost/quizProject/api/route.php?route=create_quiz', {
+                const response = await fetch('http://localhost:8080/api/route.php?route=create_quiz', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

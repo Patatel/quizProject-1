@@ -54,7 +54,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost/quizProject/api/route.php?route=my_quizzes&user_id=${encodeURIComponent(user.id)}`);
+                const response = await fetch(`http://localhost:8080/api/route.php?route=my_quizzes&user_id=${encodeURIComponent(user.id)}`);
                 const userQuizzes = await response.json();
 
                 const tbody = document.getElementById("quiz-table-body");
@@ -91,7 +91,7 @@
             if (!confirm("Êtes-vous sûr de vouloir supprimer ce quiz ?")) return;
 
             try {
-                const response = await fetch("http://localhost/quizProject/api/route.php?route=delete_quiz", {
+                const response = await fetch("http://localhost:8080/api/route.php?route=delete_quiz", {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"

@@ -49,7 +49,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost/quizProject/api/route.php?route=get_quiz_questions&quiz_id=${quizId}`);
+                const response = await fetch(`http://localhost:8080/api/route.php?route=get_quiz_questions&quiz_id=${quizId}`);
                 if (!response.ok) throw new Error("Erreur lors du chargement des questions");
 
                 const contentType = response.headers.get("content-type");
@@ -135,7 +135,7 @@
             };
 
             try {
-                const response = await fetch("http://localhost/quizProject/api/route.php?route=user_submit_answers", {
+                const response = await fetch("http://localhost:8080/api/route.php?route=user_submit_answers", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

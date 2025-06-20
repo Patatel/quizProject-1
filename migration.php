@@ -47,8 +47,8 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
     INSERT INTO `questionquiz` (`question_id`, `quiz_id`) VALUES
-    (9, 2),
-    (10, 3);
+    (9, 1),
+    (10, 2);
 
     DROP TABLE IF EXISTS `questions`;
     CREATE TABLE IF NOT EXISTS `questions` (
@@ -73,9 +73,8 @@ try {
     ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
     INSERT INTO `quiz` (`id`, `title`, `description`, `user_id`, `created_at`) VALUES
-    (1, 'Test', 'test', 2, '2025-05-29 12:15:44'),
-    (2, 'Test 2', 'Quizz sur les ours', 2, '2025-05-29 13:42:20'),
-    (3, 'lea', 'jun', 2, '2025-05-29 14:32:24');
+    (1, 'Test 2', 'Quizz sur les ours', 2, '2025-05-29 13:42:20'),
+    (2, 'lea', 'jun', 2, '2025-05-29 14:32:24');
 
     DROP TABLE IF EXISTS `results`;
     CREATE TABLE IF NOT EXISTS `results` (
@@ -124,9 +123,6 @@ try {
       PRIMARY KEY (`id`),
       UNIQUE KEY `email` (`email`)
     ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-    INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
-    (2, 'Lukas', 'lukasbouhlel@gmail.com', "\$2y\$10\$SJIiwA.ibMIgaKhSqGWEU.eHEI7tnpFgSi8mhrLLQHX1KCmGnxG1G", 'user', '2025-05-29 12:15:05');
 
     ALTER TABLE `answers`
       ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE;

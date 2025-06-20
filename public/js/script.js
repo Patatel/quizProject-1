@@ -5,7 +5,7 @@ function showForm(type) {
 }
 
 const API_BASE = window.location.origin + '/api/route.php';
-console.log(API_BASE);
+
 // Envoie la requête d'inscription
 function handleRegister(e) {
   e.preventDefault();
@@ -21,9 +21,11 @@ function handleRegister(e) {
   })
     .then(async res => {
       const text = await res.text();
-      console.log("Raw response:", text);  // 🧪 Voir la vraie réponse (HTML ? JSON ?)
+      console.log("Raw response:", text); // 🧪 Debug
       try {
-        return JSON.parse(text);
+        const data = JSON.parse(text);
+        console.log("Parsed data:", data);
+        return data;
       } catch (e) {
         throw new Error("Réponse invalide JSON");
       }
@@ -39,34 +41,47 @@ function handleRegister(e) {
         messageElement.style.color = 'red';
       }
     })
-    .catch(err => console.error("Fetch failed:", err));
+    .catch(err => {
+      console.error("Fetch failed:", err);
+      const messageElement = document.getElementById('register-message');
+      messageElement.textContent = "Erreur réseau ou réponse invalide.";
+      messageElement.style.color = 'red';
+    });
 }
 
-fetch(`${API_BASE}?route=login`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ email, password })
-})
-  .then(async response => {
-    const text = await response.text();
-    console.log("Raw response login:", text);
-    try {
-      return JSON.parse(text);
-    } catch {
-      throw new Error("Réponse invalide JSON");
-    }
+function handleLogin(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+
+  fetch(`${API_BASE}?route=login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
   })
-  .then(data => {
-    if (data.user) {
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = '/quizProject/public/html/home.html';
-    } else {
-      document.getElementById('login-message').textContent = data.error || "Erreur inconnue";
-    }
-  })
-  .catch(error => {
-    console.error("Erreur lors de la connexion :", error);
-    document.getElementById('login-message').textContent = "Erreur réseau ou serveur.";
-  });
+    .then(async response => {
+      const text = await response.text();
+      console.log("Raw response login:", text);
+      try {
+        const data = JSON.parse(text);
+        return data;
+      } catch (e) {
+        throw new Error("Réponse JSON invalide");
+      }
+    })
+    .then(data => {
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        window.location.href = '/html/home.html';
+      } else {
+        document.getElementById('login-message').textContent = data.error || "Identifiants incorrects";
+      }
+    })
+    .catch(error => {
+      console.error("Erreur lors de la connexion :", error);
+      document.getElementById('login-message').textContent = "Erreur réseau ou réponse invalide.";
+    });
+}

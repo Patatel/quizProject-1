@@ -1,20 +1,22 @@
 # Utilisez une image officielle de PHP comme base
 FROM php:8.0-apache
 
+CMD ["apache2-foreground"]
+
 # Installez les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Installez Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copiez le reste de votre application dans le conteneur
+COPY . /var/www/html/
+
 # Copiez les fichiers composer.json et composer.lock
 COPY composer.json composer.lock /var/www/html/
 
 # Installez les dépendances du projet
 RUN composer install --no-dev --optimize-autoloader
-
-# Copiez le reste de votre application dans le conteneur
-COPY . /var/www/html/
 
 # Activez le module Apache rewrite
 RUN a2enmod rewrite

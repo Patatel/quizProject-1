@@ -202,7 +202,7 @@
         // Charger les questions existantes du quiz
         async function loadQuestions(quizId) {
             try {
-                const response = await fetch(`http://localhost/quizProject/api/route.php?route=get_questions&quiz_id=${quizId}`);
+                const response = await fetch(`http://localhost:8080/api/route.php?route=get_questions&quiz_id=${quizId}`);
                 if (!response.ok) throw new Error("Erreur lors du chargement des questions");
                 const questions = await response.json();
 
@@ -233,7 +233,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost/quizProject/api/route.php?route=get_quiz&id=${quizId}`);
+                const response = await fetch(`http://localhost:8080/api/route.php?route=get_quiz&id=${quizId}`);
                 if (!response.ok) throw new Error("Erreur lors du chargement du quiz");
                 const quiz = await response.json();
 
@@ -258,7 +258,7 @@
             const description = document.getElementById("description").value;
 
             try {
-                const response = await fetch("http://localhost/quizProject/api/route.php?route=update_quiz", {
+                const response = await fetch("http://localhost:8080/api/route.php?route=update_quiz", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id, title, description })
@@ -306,7 +306,7 @@
             }
 
             try {
-                const response = await fetch("http://localhost/quizProject/api/route.php?route=update_questions", {
+                const response = await fetch("http://localhost:8080/api/route.php?route=update_questions", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ quiz_id: quizId, questions })

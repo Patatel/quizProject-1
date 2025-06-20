@@ -14,13 +14,13 @@ class UserModel
     {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-            return $stmt->execute([$name, $email, $password]);
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            return $stmt->execute([$name, $email, $hashedPassword]);
         } catch (PDOException $e) {
             error_log("Erreur DB createUser: " . $e->getMessage());
             return false;
         }
     }
-
 
     public function findUserByEmail($email)
     {
