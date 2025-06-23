@@ -2,12 +2,37 @@ name: Continuous Integration
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - '**.php'
+      - '**.js'
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Check PHP syntax
+        run: |
+          find . -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Check JS syntax
+        run: |
+          find public/js -name '*.js' -print0 | xargs -0 -n1 node -c
+
   test:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:8
@@ -17,10 +42,10 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v3
@@ -29,10 +54,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-          extensions: pdo, pdo_mysql
+          extensions: pdo_mysql
 
       - name: Install dependencies
-        run: composer install --no-progress
+        run: composer install --no-progress --prefer-dist
 
       - name: Wait for MySQL
         run: sleep 20
@@ -40,25 +65,6 @@ jobs:
       - name: Run PHPUnit tests
         env:
           DATABASE_DSN: "mysql:host=127.0.0.1;port=3306;dbname=quizproject_test"
-          DATABASE_USER: root
-          DATABASE_PASS: root
-        run: ./vendor/bin/phpunit --testdox
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-      - name: Check PHP syntax
-        run: |
-          find . -name '*.php' -print0 | xargs -0 -n1 php -l
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Check JS syntax
-        run: |
-          find public/js -name '*.js' -print0 | xargs -0 -n1 node -c
+          DB_USER: root
+          DB_PASSWORD: root
+        run: ./vendor/bin/phpunit --configuration phpunit.xml
