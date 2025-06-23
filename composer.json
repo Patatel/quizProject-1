@@ -1,15 +1,26 @@
 {
-    "require-dev": {
-        "phpunit/phpunit": "^9.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "QuizProject\\": "api/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "QuizProject\\Tests\\": "tests/"
-        }
+  "name": "quizproject/app",
+  "description": "Application de quiz en PHP",
+  "type": "project",
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "QuizProject\\": "api/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "QuizProject\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "testdox": "phpunit --testdox",
+    "lint": "find . -name '*.php' -print0 | xargs -0 -n1 php -l"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }
