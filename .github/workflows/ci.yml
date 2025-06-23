@@ -55,11 +55,14 @@ jobs:
           php-version: '8.1'
           extensions: pdo_mysql
 
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist
-
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist
+        
+      - name: Vérification debug phpunit
+        run: ls -la vendor/bin
 
       - name: Make migration script executable
         run: chmod +x scripts/migration_test.sh
