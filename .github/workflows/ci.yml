@@ -2,9 +2,8 @@ name: Continuous Integration
 
 on:
   push:
-    paths:
-      - '**.php'
-      - '**.js'
+    branches:
+      - main
 
 jobs:
   test:
