@@ -6,4 +6,4 @@ until php -r "new PDO('mysql:host=127.0.0.1;dbname=quizproject_test', 'root', 'r
 done
 
 echo "✅ Base de données prête. Exécution de la migration..."
-php migration_test.php
+php scripts/migration_test.php
