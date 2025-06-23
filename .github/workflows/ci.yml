@@ -7,6 +7,44 @@ on:
       - '**.js'
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: quizproject_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: pdo, pdo_mysql
+
+      - name: Install dependencies
+        run: composer install --no-progress
+
+      - name: Wait for MySQL
+        run: sleep 20
+
+      - name: Run PHPUnit tests
+        env:
+          DATABASE_DSN: "mysql:host=127.0.0.1;port=3306;dbname=quizproject_test"
+          DATABASE_USER: root
+          DATABASE_PASS: root
+        run: ./vendor/bin/phpunit --testdox
+
   lint:
     runs-on: ubuntu-latest
     steps:
