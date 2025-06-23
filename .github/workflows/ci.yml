@@ -58,6 +58,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
+      - name: Make migration script executable
+        run: chmod +x scripts/migration_test.sh
+
       - name: Run database migration
         run: ./migration_test.sh
 
