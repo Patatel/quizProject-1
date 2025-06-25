@@ -2,16 +2,17 @@
 namespace QuizProject\Tests;
 
 require_once __DIR__ . '/../api/models/QuizModel.php';
+require_once __DIR__ . '/TestCase.php';
 
 class QuizModelTest extends TestCase
 {    public function testCreateAndFetchQuiz(): void
     {
         // Create a test user first
-        $userModel = new \UserModel($this->pdo);
+        $userModel = new \UserModel($this->getPDO());
         $userModel->createUser('TestUser', 'test@example.com', 'password');
-        $userId = $this->pdo->lastInsertId();
-        
-        $model = new \QuizModel($this->pdo);
+        $userId = $this->getPDO()->lastInsertId();
+
+        $model = new \QuizModel($this->getPDO());
         $id = $model->createQuiz('Title', 'Desc', $userId);
         $this->assertIsNumeric($id);
 

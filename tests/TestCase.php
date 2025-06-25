@@ -6,14 +6,21 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected PDO $pdo;    protected function setUp(): void
+    public function getPDO()
+    {
+        $dsn = getenv('DATABASE_DSN');
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASSWORD');
+
+        return new PDO($dsn, $user, $pass);
+    }
+
+    protected PDO $pdo;
+
+    protected function setUp(): void
     {
         parent::setUp();
-        $dsn = getenv('DATABASE_DSN') ?: 'mysql:host=localhost;dbname=quizproject_test';
-        $user = getenv('DATABASE_USER') ?: 'root';
-        $pass = getenv('DATABASE_PASS') ?: 'root';
-       
-        $this->pdo = new PDO($dsn, $user, $pass);
+        $this->pdo = $this->getPDO();
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
        
         // Clean up existing tables
