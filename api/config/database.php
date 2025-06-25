@@ -1,5 +1,5 @@
 <?php
-$host = getenv('DB_HOST') ?: 'localhost';
+$host = getenv('DB_HOST') ?: '127.0.0.1';
 $db = getenv('DB_NAME') ?: 'quizproject';
 $user = getenv('DB_USER') ?: 'user';
 $pass = getenv('DB_PASS') ?: 'password';
