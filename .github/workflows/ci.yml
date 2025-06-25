@@ -54,6 +54,12 @@ jobs:
         with:
           php-version: '8.1'
           extensions: pdo_mysql
+      
+      - name: Check MySQL connection and list databases
+        run: |
+          echo "Test de connexion à MySQL..."
+          mysql -h 127.0.0.1 -P 3306 -uroot -proot -e "SHOW DATABASES;"
+
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -72,7 +78,6 @@ jobs:
 
       - name: Run migration
         run: ./scripts/migration_test.sh
-
 
       - name: Run PHPUnit tests
         env:
