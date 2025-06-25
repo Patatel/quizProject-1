@@ -6,7 +6,7 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="DATABASE_DSN" value="mysql:host=127.0.0.1;dbname=quizproject_test"/>
+        <env name="DATABASE_DSN" value="mysql:host=127.0.0.1;dbname=quizproject_test;charset=utf8mb4"/>
         <env name="DB_USER" value="root"/>
         <env name="DB_PASSWORD" value="root"/>
     </php>
