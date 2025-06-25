@@ -11,7 +11,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         $dsn = getenv('DATABASE_DSN') ?: 'mysql:host=localhost;dbname=quizproject_test';
         $user = getenv('DATABASE_USER') ?: 'root';
-        $pass = getenv('DATABASE_PASS') ?: '';
+        $pass = getenv('DATABASE_PASS') ?: 'root';
        
         $this->pdo = new PDO($dsn, $user, $pass);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
