@@ -36,15 +36,16 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: quizproject_test
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
@@ -60,6 +61,9 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist
+
+      - name: Wait for MySQL to be ready
+        run: sleep 15
         
       - name: Vérification debug phpunit
         run: ls -la vendor/bin
