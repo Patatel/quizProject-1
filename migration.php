@@ -91,19 +91,19 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
 (2, 'Jean', 'jean@example.com', 'motdepasse');
 
 INSERT INTO `quiz` (`id`, `title`, `description`, `user_id`, `created_at`) VALUES
-(1, 'Test 2', 'Quizz sur les ours', 2, NOW()),
-(2, 'lea', 'jun', 2, NOW());
+(1, 'Test 1', 'Quizz sur les ours', 2, NOW()),
+(2, 'Test 2', 'Quizz sur les chats', 2, NOW());
 
 INSERT INTO `questions` (`id`, `text`) VALUES
 (9, 'Un grizzly est en majorité ?'),
-(10, 'test');
+(10, 'La couleur des yeux du chat est en majorité ?');
 
 INSERT INTO `answers` (`id`, `question_id`, `text`, `is_correct`) VALUES
 (24, 9, 'Noir', 0),
 (25, 9, 'Brun', 1),
 (26, 9, 'Roux', 0),
-(27, 10, '1', 0),
-(28, 10, '2', 1);
+(27, 10, 'Bleu', 0),
+(28, 10, 'Jaune', 1);
 
 INSERT INTO `questionquiz` (`question_id`, `quiz_id`) VALUES
 (9, 1),
