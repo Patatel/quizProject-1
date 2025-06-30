@@ -3,7 +3,7 @@ FROM php:8.0-apache
 
 CMD ["apache2-foreground"]
 
-# Installez les extensions PHP nécessaires
+# Installez les extensions PHP nécessaires test
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Installez Composer
