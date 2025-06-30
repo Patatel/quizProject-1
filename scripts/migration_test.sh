@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "⏳ En attente de la base de données (127.0.0.1)..."
-until php -r "new PDO('mysql:host=127.0.0.1;dbname=quizproject_test', 'root', 'root');"; do
+until php -r "new PDO('mysql:host=127.0.0.1;dbname=quizproject_test', 'user', 'password');"; do
   sleep 1
 done
 
