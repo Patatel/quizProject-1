@@ -132,7 +132,6 @@ ALTER TABLE `useranswers`
   ADD CONSTRAINT `useranswers_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `useranswers_ibfk_3` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE;
 
-GRANT ALL PRIVILEGES ON `$db`.* TO '$user'@'quizproject_test';
 SQL;
 
     $pdo->exec($sql);
