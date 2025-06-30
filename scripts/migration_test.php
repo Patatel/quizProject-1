@@ -1,8 +1,8 @@
 <?php
 $host = '127.0.0.1';
 $db   = 'quizproject_test';
-$user = 'root';
-$pass = 'root';
+$user = 'user';
+$pass = 'password';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;charset=$charset";
@@ -132,7 +132,7 @@ ALTER TABLE `useranswers`
   ADD CONSTRAINT `useranswers_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `useranswers_ibfk_3` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE;
 
-GRANT ALL PRIVILEGES ON `$db`.* TO '$user'@'localhost';
+GRANT ALL PRIVILEGES ON `$db`.* TO '$user'@'quizproject_test' IDENTIFIED BY '$pass';
 SQL;
 
     $pdo->exec($sql);
