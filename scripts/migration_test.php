@@ -1,8 +1,8 @@
 <?php
 $host = '127.0.0.1';
 $db   = 'quizproject_test';
-$user = 'user';
-$pass = 'password';
+$user = 'root';
+$pass = 'root';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;charset=$charset";
