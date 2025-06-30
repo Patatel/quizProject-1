@@ -38,7 +38,7 @@ jobs:
         env:
           MYSQL_DATABASE: quizproject_test
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_ROOT_HOST: '%'
+          MYSQL_ROOT_HOST: '127.0.0.1'
         ports:
           - 3306:3306
         options: >-
